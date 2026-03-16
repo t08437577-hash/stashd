@@ -1,0 +1,94 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Palette */
+  --bg:         #0F0E0C;
+  --bg2:        #161410;
+  --bg3:        #1E1B17;
+  --bg4:        #272320;
+  --line:       #2E2A26;
+  --line2:      #3D3830;
+  --muted:      #6B6560;
+  --subtle:     #9A948E;
+  --body:       #C8C4BE;
+  --heading:    #F0EDE8;
+  --white:      #FAF8F5;
+
+  --gold:       #D4A847;
+  --gold2:      #B8922F;
+  --gold-dim:   rgba(212,168,71,0.12);
+  --gold-pale:  rgba(212,168,71,0.06);
+
+  --rust:       #C4522A;
+  --rust-dim:   rgba(196,82,42,0.12);
+  --sage:       #4E7A62;
+  --sage-dim:   rgba(78,122,98,0.12);
+  --blue:       #3D6FA8;
+  --blue-dim:   rgba(61,111,168,0.12);
+
+  --red:        #D94F4F;
+  --green:      #4A9E6B;
+
+  /* Type */
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'DM Sans', system-ui, sans-serif;
+  --font-m: 'DM Mono', 'Courier New', monospace;
+
+  /* Radii */
+  --r-xs:   4px;
+  --r-sm:   8px;
+  --r-md:   12px;
+  --r-lg:   16px;
+  --r-xl:   20px;
+  --r-2xl:  28px;
+  --r-full: 999px;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.6);
+  --shadow-gold: 0 0 0 1px rgba(212,168,71,0.3);
+}
+
+html, body, #root {
+  height: 100%;
+  background: #0A0908;
+  color: var(--body);
+  font-family: var(--font-b);
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+button, input, textarea, select {
+  font-family: var(--font-b);
+  font-size: inherit;
+}
+
+button { cursor: pointer; }
+
+input, textarea {
+  color: var(--heading);
+  background: var(--bg3);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color .15s;
+  width: 100%;
+}
+input:focus, textarea:focus { border-color: var(--gold); }
+input::placeholder, textarea::placeholder { color: var(--muted); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 0; height: 0; }
+* { scrollbar-width: none; }
+
+/* Utility */
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
