@@ -50,6 +50,7 @@ function CollectionsAdmin() {
   const [saving,  setSaving]  = useState(false)
   const coverRef = useRef(null)
   const [uploadingCoverId, setUploadingCoverId] = useState(null)
+  const [uploadingCover, setUploadingCover] = useState(false)
 
   useEffect(() => { load() }, [])
 
@@ -84,13 +85,14 @@ function CollectionsAdmin() {
     await load()
   }
 
-  const uploadCover = async (e) => {
+  const uploadCover = async (e, colId) => {
     const file = e.target.files?.[0]; if (!file) return
-    const colId = uploadingCoverId; if (!colId) return
-    const { url } = await uploadCollectionCover(colId, file)
-    if (url) { await upsertCollection({ id: colId, cover_url: url }); await load() }
+    setUploadingCover(true)
+    const { url, error } = await uploadCollectionCover(colId, file)
+    if (error) { alert('Upload failed: ' + error.message) }
+    else if (url) { await upsertCollection({ id: colId, cover_url: url }); await load() }
+    setUploadingCover(false)
     e.target.value = ''
-    setUploadingCoverId(null)
   }
 
   const triggerCoverUpload = (colId) => {
@@ -107,8 +109,7 @@ function CollectionsAdmin() {
         <Btn onClick={startNew} size="sm">+ New Collection</Btn>
       </div>
 
-      {/* Shared cover upload input */}
-      <input ref={coverRef} type="file" accept="image/*" style={{ display:'none' }} onChange={uploadCover}/>
+      {/* Shared cover upload input - removed, now per-row */}
 
       {/* Edit form */}
       {editing && (
@@ -140,10 +141,11 @@ function CollectionsAdmin() {
       {cols.map(col => (
         <div key={col.id} style={{ background: 'var(--bg2)', border: '1px solid var(--line)', borderRadius: 'var(--r-lg)', padding: '14px 16px', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 48, height: 48, borderRadius: 'var(--r-sm)', background: 'var(--bg4)', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-d)', fontSize: 14, fontWeight: 900, color: 'var(--muted)', border: '1px solid var(--line2)', cursor: 'pointer', position: 'relative' }}
-              onClick={() => triggerCoverUpload(col.id)}>
+            {/* Cover thumbnail — click label to upload */}
+            <label htmlFor={`cover-${col.id}`} style={{ width: 48, height: 48, borderRadius: 'var(--r-sm)', background: 'var(--bg4)', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-d)', fontSize: 14, fontWeight: 900, color: 'var(--muted)', border: '1px solid var(--gold)60', cursor: 'pointer', position: 'relative' }}>
               {col.cover_url ? <img src={col.cover_url} style={{ width:'100%',height:'100%',objectFit:'cover' }}/> : col.abbr}
-            </div>
+              <input id={`cover-${col.id}`} type="file" accept="image/*" style={{ display:'none' }} onChange={e => uploadCover(e, col.id)}/>
+            </label>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--heading)' }}>{col.title}</div>
               <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 1 }}>{col.year} · {col.total} items · #{col.sort_order}</div>
