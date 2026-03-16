@@ -140,12 +140,14 @@ function CollectionsAdmin() {
       {/* List */}
       {cols.map(col => (
         <div key={col.id} style={{ background: 'var(--bg2)', border: '1px solid var(--line)', borderRadius: 'var(--r-lg)', padding: '14px 16px', marginBottom: 8 }}>
+          {/* Cover image preview */}
+          {col.cover_url && (
+            <img src={col.cover_url} alt="cover" style={{ width: '100%', height: 80, objectFit: 'cover', borderRadius: 'var(--r-sm)', marginBottom: 10, border: '1px solid var(--line2)' }}/>
+          )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            {/* Cover thumbnail — click label to upload */}
-            <label htmlFor={`cover-${col.id}`} style={{ width: 48, height: 48, borderRadius: 'var(--r-sm)', background: 'var(--bg4)', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-d)', fontSize: 14, fontWeight: 900, color: 'var(--muted)', border: '1px solid var(--gold)60', cursor: 'pointer', position: 'relative' }}>
-              {col.cover_url ? <img src={col.cover_url} style={{ width:'100%',height:'100%',objectFit:'cover' }}/> : col.abbr}
-              <input id={`cover-${col.id}`} type="file" accept="image/*" style={{ display:'none' }} onChange={e => uploadCover(e, col.id)}/>
-            </label>
+            <div style={{ width: 44, height: 44, borderRadius: 'var(--r-sm)', background: 'var(--bg4)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-d)', fontSize: 14, fontWeight: 900, color: 'var(--muted)', border: '1px solid var(--line2)' }}>
+              {col.abbr}
+            </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--heading)' }}>{col.title}</div>
               <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 1 }}>{col.year} · {col.total} items · #{col.sort_order}</div>
@@ -155,6 +157,13 @@ function CollectionsAdmin() {
               <Btn onClick={() => startEdit(col)} size="sm" variant="ghost">Edit</Btn>
               <Btn onClick={() => del(col.id)} size="sm" variant="danger">Del</Btn>
             </div>
+          </div>
+          {/* Explicit upload cover button */}
+          <div style={{ marginTop: 10 }}>
+            <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'var(--bg3)', border: '1px solid var(--line2)', borderRadius: 'var(--r-sm)', fontSize: 12, color: 'var(--muted)', cursor: 'pointer' }}>
+              {uploadingCover && uploadingCoverId === col.id ? <Spinner size={12}/> : '↑'} {col.cover_url ? 'Replace cover photo' : 'Upload cover photo'}
+              <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { setUploadingCoverId(col.id); uploadCover(e, col.id) }}/>
+            </label>
           </div>
         </div>
       ))}
