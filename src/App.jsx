@@ -241,6 +241,7 @@ export default function App() {
           collection={activeCol}
           userItem={selItem.userItem}
           user={session.user}
+          isAdmin={!!profile?.is_admin}
           onClose={() => setSelItem(null)}
           onSaved={() => { selItem.reload(); showToast('Saved') }}
           showToast={showToast}
