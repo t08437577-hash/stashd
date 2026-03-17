@@ -139,7 +139,7 @@ export default function CollectionScreen({ collection, user, onBack, onItemTap }
 }
 
 // ── ITEM MODAL ────────────────────────────────────────────────────────────────
-export function ItemModal({ item, collection, userItem: initialUI, user, onClose, onSaved, showToast }) {
+export function ItemModal({ item, collection, userItem: initialUI, user, isAdmin, onClose, onSaved, showToast }) {
   const [ui,       setUi]       = useState(initialUI || {})
   const [saving,   setSaving]   = useState(false)
   const [imgSide,  setImgSide]  = useState('front')
@@ -232,12 +232,15 @@ export function ItemModal({ item, collection, userItem: initialUI, user, onClose
             )}
           </div>
 
-          {/* Upload */}
+          {/* Upload — only admins can upload official photos */}
           <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleUpload}/>
-          <button onClick={() => fileRef.current?.click()} disabled={uploading}
-            style={{ width: '100%', padding: '9px', border: '1px dashed var(--line2)', borderRadius: 'var(--r-sm)', background: 'none', color: 'var(--muted)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 16, cursor: 'pointer' }}>
-            {uploading ? <Spinner size={14}/> : '↑'} {uploading ? 'Uploading…' : `Upload ${imgSide} photo`}
-          </button>
+          {isAdmin && (
+            <button onClick={() => fileRef.current?.click()} disabled={uploading}
+              style={{ width: '100%', padding: '9px', border: '1px dashed var(--line2)', borderRadius: 'var(--r-sm)', background: 'none', color: 'var(--muted)', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 16, cursor: 'pointer' }}>
+              {uploading ? <Spinner size={14}/> : '↑'} {uploading ? 'Uploading…' : `Upload ${imgSide} photo`}
+            </button>
+          )}
+          {!isAdmin && <div style={{ marginBottom: 16 }}/>}
 
           {/* Actions */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
