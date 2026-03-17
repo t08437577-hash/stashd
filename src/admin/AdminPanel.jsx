@@ -48,9 +48,7 @@ function CollectionsAdmin() {
   const [editing, setEditing] = useState(null)
   const [form,    setForm]    = useState({})
   const [saving,  setSaving]  = useState(false)
-  const coverRef = useRef(null)
   const [uploadingCoverId, setUploadingCoverId] = useState(null)
-  const [uploadingCover, setUploadingCover] = useState(false)
 
   useEffect(() => { load() }, [])
 
@@ -86,18 +84,21 @@ function CollectionsAdmin() {
   }
 
   const uploadCover = async (e, colId) => {
-    const file = e.target.files?.[0]; if (!file) return
-    setUploadingCover(true)
-    const { url, error } = await uploadCollectionCover(colId, file)
-    if (error) { alert('Upload failed: ' + error.message) }
-    else if (url) { await upsertCollection({ id: colId, cover_url: url }); await load() }
-    setUploadingCover(false)
-    e.target.value = ''
-  }
-
-  const triggerCoverUpload = (colId) => {
+    const file = e.target.files?.[0]
+    if (!file) return
     setUploadingCoverId(colId)
-    setTimeout(() => coverRef.current?.click(), 50)
+    try {
+      const { url, error } = await uploadCollectionCover(colId, file)
+      if (error) alert('Upload failed: ' + error.message)
+      else if (url) {
+        await upsertCollection({ id: colId, cover_url: url })
+        await load()
+      }
+    } catch(err) {
+      alert('Error: ' + err.message)
+    }
+    setUploadingCoverId(null)
+    e.target.value = ''
   }
 
   if (loading) return <div style={{ padding: 40, display: 'flex', justifyContent: 'center' }}><Spinner size={24}/></div>
