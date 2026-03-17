@@ -42,8 +42,14 @@ export async function getAllCollectionsAdmin() {
 }
 
 export async function upsertCollection(fields) {
+  // Only send fields that exist in the collections table
+  const allowed = ['id','slug','title','abbr','year','description','cover_url','total','sort_order','published']
+  const clean = {}
+  for (const key of allowed) {
+    if (fields[key] !== undefined) clean[key] = fields[key]
+  }
   const { data, error } = await supabase
-    .from('collections').upsert(fields).select().single()
+    .from('collections').upsert(clean).select().single()
   return { data, error }
 }
 
